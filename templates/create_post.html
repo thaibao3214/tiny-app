@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>Create Post</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        nav ul { list-style-type: none; padding: 0; }
+        nav ul li { display: inline; margin-right: 15px; }
+        form { max-width: 400px; margin-top: 20px; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; }
+        button { padding: 10px 15px; background: blue; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('admin') }}">Admin</a></li>
+                {% endif %}
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <h1>Create Post</h1>
+
+    <form method="post">
+        {{ form.hidden_tag() }}
+        
+        <label for="title">{{ form.title.label }}</label>
+        {{ form.title(size=32, autocomplete="off") }}
+
+        <label for="body">{{ form.body.label }}</label>
+        {{ form.body(rows=5, cols=40, autocomplete="off") }}
+
+        {{ form.submit(class="btn") }}
+    </form>
+</body>
+</html>

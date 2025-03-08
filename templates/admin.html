@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<h1>User Management</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Admin</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.is_admin }}</td>
+            <td>{{ user.is_active }}</td>
+            <td>
+                {% if user.id != current_user.id %}
+                    {% if user.is_active %}
+                        <a href="{{ url_for('block_user', user_id=user.id) }}">Block</a>
+                    {% else %}
+                        <a href="{{ url_for('unblock_user', user_id=user.id) }}">Unblock</a>
+                    {% endif %}
+                    <a href="{{ url_for('delete_user', user_id=user.id) }}">Delete</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

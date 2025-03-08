@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Your Posts</h1>
+<a href="{{ url_for('create_post') }}">Create new post</a>
+<ul>
+    {% for post in posts %}
+        <li>{{ post.title }}: {{ post.body }}</li>
+    {% endfor %}
+</ul>
+<div>
+    {% if prev_url %}
+        <a href="{{ prev_url }}">Previous</a>
+    {% endif %}
+    {% if next_url %}
+        <a href="{{ next_url }}">Next</a>
+    {% endif %}
+</div>
+{% endblock %}
