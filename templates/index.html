@@ -1,19 +1,50 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<h1>Your Posts</h1>
-<a href="{{ url_for('create_post') }}">Create new post</a>
-<ul>
-    {% for post in posts %}
-        <li>{{ post.title }}: {{ post.body }}</li>
-    {% endfor %}
-</ul>
-<div>
-    {% if prev_url %}
-        <a href="{{ prev_url }}">Previous</a>
-    {% endif %}
-    {% if next_url %}
-        <a href="{{ next_url }}">Next</a>
-    {% endif %}
+
+<h1 class="text-center mt-3">Bài Viết Mới Nhất</h1>
+
+<div class="text-end mb-3">
+    <a href="{{ url_for('create_post') }}" class="btn btn-success">+ Viết bài mới</a>
 </div>
+
+<div class="row">
+    {% for post in posts %}
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm">
+                {% if post.image_url %}
+                    <img src="{{ post.image_url }}" class="card-img-top img-fluid" alt="Hình ảnh bài viết">
+                {% else %}
+                    <img src="{{ url_for('static', filename='default.jpg') }}" class="card-img-top img-fluid" alt="Hình ảnh mặc định">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.body[:100] }}...</p>
+                    <p class="text-muted">
+                        Viết bởi: <strong>{{ post.author.username }}</strong> | 
+                        Đăng ngày: {{ post.created_at.strftime('%d/%m/%Y %H:%M') if post.created_at else 'Không xác định' }}
+                    </p>
+                    {% if current_user.is_authenticated and (post.user_id == current_user.id or current_user.is_admin) %}
+                        <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                        <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">Xóa</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not prev_url %}disabled{% endif %}">
+            <a class="page-link" href="{{ prev_url or '#' }}">Trước</a>
+        </li>
+        <li class="page-item {% if not next_url %}disabled{% endif %}">
+            <a class="page-link" href="{{ next_url or '#' }}">Sau</a>
+        </li>
+    </ul>
+</nav>
+
 {% endblock %}
